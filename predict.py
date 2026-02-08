@@ -7,8 +7,9 @@ import pickle
 
 def generate_caption(image_path):
 
-    model = load_model("model.keras")
-    fe = load_model("feature_extractor.keras")
+    model = load_model("model.keras", compile=False)
+    fe = load_model("feature_extractor.keras", compile=False)
+
     tokenizer = load_tokenizer()
     max_length = pickle.load(open("max_length.pkl","rb"))
 
