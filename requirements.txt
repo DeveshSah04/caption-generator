@@ -6,3 +6,4 @@ seaborn
 tqdm
 streamlit
 pillow
+protobuf==3.20.3
