@@ -1,9 +1,6 @@
-tensorflow
-numpy
-pandas
-matplotlib
-seaborn
-tqdm
-streamlit
-pillow
+streamlit==1.32.2
+tensorflow-cpu==2.15.0
+numpy==1.26.4
+pandas==2.1.4
+pillow==10.2.0
 protobuf==3.20.3
