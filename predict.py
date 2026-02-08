@@ -40,7 +40,16 @@ def generate_caption(image_path):
             break
 
     final_caption = in_text.replace("startseq","").replace("endseq","").strip()
+
+# Capitalize first letter
+    final_caption = final_caption.capitalize()
+
+    # Add period at end if missing
+    if not final_caption.endswith("."):
+        final_caption += "."
+
     return final_caption
+
 
 
 if __name__ == "__main__":
