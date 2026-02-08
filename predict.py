@@ -12,39 +12,6 @@ def remove_repeated_words(text):
             new_words.append(w)
     return " ".join(new_words)
 
-def generate_caption_beam_search(feature, model, tokenizer, max_length, beam_index=3):
-
-    start = [tokenizer.word_index['startseq']]
-    start_word = [[start, 0.0]]
-
-    while len(start_word[0][0]) < max_length:
-        temp = []
-        for s in start_word:
-            seq = pad_sequences([s[0]], maxlen=max_length)
-            preds = model.predict([feature, seq], verbose=0)[0]
-
-            word_preds = np.argsort(preds)[-beam_index:]
-
-            for w in word_preds:
-                next_seq = s[0] + [w]
-                prob = s[1] + preds[w]
-                temp.append([next_seq, prob])
-
-        start_word = sorted(temp, key=lambda l: l[1])
-        start_word = start_word[-beam_index:]
-
-    start_word = start_word[-1][0]
-
-    caption_words = []
-    for idx in start_word:
-        word = tokenizer.index_word.get(idx)
-        if word == "endseq":
-            break
-        if word != "startseq":
-            caption_words.append(word)
-
-    return " ".join(caption_words)
-
 def generate_caption(image_path):
 
     model = load_model("model.keras", compile=False)
@@ -57,14 +24,40 @@ def generate_caption(image_path):
     img = np.expand_dims(img, axis=0)
     feature = fe.predict(img, verbose=0)
 
-    caption_text = generate_caption_beam_search(feature, model, tokenizer, max_length)
+    in_text = "startseq"
 
-    final_caption = caption_text.strip()
+    for i in range(max_length):
+        seq = tokenizer.texts_to_sequences([in_text])[0]
+        seq = pad_sequences([seq], maxlen=max_length)
+
+        yhat = model.predict([feature, seq], verbose=0)
+        yhat = np.argmax(yhat)
+
+        word = None
+        for w, index in tokenizer.word_index.items():
+            if index == yhat:
+                word = w
+                break
+
+        if word is None:
+            break
+
+        in_text += " " + word
+        if word == "endseq":
+            break
+
+    final_caption = in_text.replace("startseq","").replace("endseq","").strip()
+
+    # Remove repeated words
     final_caption = remove_repeated_words(final_caption)
+
+    # Capitalize first letter
     final_caption = final_caption.capitalize()
 
+    # Add full stop
     if not final_caption.endswith("."):
         final_caption += "."
 
     return final_caption
+
 
