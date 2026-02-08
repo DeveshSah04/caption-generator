@@ -59,9 +59,3 @@ def generate_caption(image_path):
         final_caption += "."
 
     return final_caption
-
-
-
-
-if __name__ == "__main__":
-    print(generate_caption("data/Images/667626_18933d713e.jpg"))
