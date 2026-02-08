@@ -4,6 +4,13 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from utils import *
 import pickle
 
+def remove_repeated_words(text):
+    words = text.split()
+    new_words = []
+    for w in words:
+        if len(new_words) == 0 or w != new_words[-1]:
+            new_words.append(w)
+    return " ".join(new_words)
 
 def generate_caption(image_path):
 
@@ -41,14 +48,18 @@ def generate_caption(image_path):
 
     final_caption = in_text.replace("startseq","").replace("endseq","").strip()
 
-# Capitalize first letter
+    # Remove repeated words
+    final_caption = remove_repeated_words(final_caption)
+
+    # Capitalize first letter
     final_caption = final_caption.capitalize()
 
-    # Add period at end if missing
+    # Add full stop
     if not final_caption.endswith("."):
         final_caption += "."
 
     return final_caption
+
 
 
 
