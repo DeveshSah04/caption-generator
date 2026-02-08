@@ -1,7 +1,7 @@
-streamlit==1.32.2
-tensorflow-cpu==2.20.0
+streamlit
+tensorflow-cpu
 numpy
-pandas==2.0.3
-pillow==10.0.1
+pandas
+pillow
 protobuf
-h5py==3.9.0
+h5py
